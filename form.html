@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Serverless</title>
+        <link rel="stylesheet" href="bootstrap.css">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+          <div class="row">
+            <div class="col-lg-4">   
+                <div class="bs-component">
+                        <h3>Form serverless using AWS provider</h3>
+                    <form action="https://sgoog0u96h.execute-api.us-east-1.amazonaws.com/develop/contact" method="POST">
+                        <fieldset>
+                
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" class="form-control" id="reply_to" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea class="form-control" id="message" required rows="3"></textarea>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-primary submit">Send Message</button>
+                        </fieldset>
+                    </form>
+                    <div id="response" class="alert alert-info" style="display: none;">
+                        <p id="js-form-response"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+         
+    </body>
+    <script>
+        (() =>{
+            const form = document.querySelector('form');
+            const formResponse = document.getElementById('js-form-response');
+            const dialog = document.getElementById('response');
+
+            form.onsubmit = e => {
+
+                e.preventDefault();
+
+                
+                var name = document.getElementById('name').value;
+                var reply_to = document.getElementById('reply_to').value;
+                var message = document.getElementById('message').value;
+                
+                const data = {};
+
+                data.body = JSON.stringify(
+                   {
+                    name : name,
+                    reply_to: reply_to,
+                    message: message
+                    }
+                );
+
+                // Construct an HTTP request
+                var xhr = new XMLHttpRequest();
+                xhr.open(form.method, form.action, true);
+                xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+                // Send the collected data as JSON
+                xhr.send(JSON.stringify(data));
+
+                // Callback function
+                xhr.onloadend = response => {
+                    if (response.target.status === 200) {
+                        // The form submission was successful
+                        form.reset();
+                        formResponse.innerHTML = 'Thanks for the message. I’ll be in touch shortly.';
+                    } else {
+                        // The form submission failed
+                        formResponse.innerHTML = 'Something went wrong';
+                        console.error(JSON.parse(response.target.response).message);
+                    }
+                    dialog.style.display = "block";
+                };
+            };
+        })();
+    </script>
+</html>

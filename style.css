@@ -1,0 +1,10 @@
+body{
+    color: #EBEBEB;
+    text-align: left;
+    background-color: #2B3E50;
+}
+
+.bs-component{
+    padding-left: 20px;
+    margin-top: 20px;
+}
